@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # print data
     all_hashes = dict([(d, simhash(d)) for d in data])
 
-    for k, h in all_hashes.items():
-        print "%s %s" % (k, h)
-        print all_hashes['Flatpack Bunny'].similarity(h)
+    for k, h in list(all_hashes.items()):
+        print("%s %s" % (k, h))
+        print(all_hashes['Flatpack Bunny'].similarity(h))
 

@@ -82,7 +82,7 @@ def load_stream(input_stream):
         try:
             yield Decimal(clean_line)
         except:
-            print >>sys.stderr, "invalid line %r" % line
+            print("invalid line %r" % line, file=sys.stderr)
 
 def median(values):
     length = len(values)
@@ -156,12 +156,12 @@ def histogram(stream, options):
     if max(bucket_counts) > 75:
         bucket_scale = int(max(bucket_counts) / 75)
     
-    print "# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v)
+    print("# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v))
     if skipped:
-        print "# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or '')
+        print("# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or ''))
     if options.mvsd:
-        print "# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data))
-    print "# each * represents a count of %d" % bucket_scale
+        print("# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data)))
+    print("# each * represents a count of %d" % bucket_scale)
     bucket_min = min_v
     bucket_max = min_v
     for bucket in range(buckets):
@@ -171,7 +171,7 @@ def histogram(stream, options):
         star_count = 0
         if bucket_count:
             star_count = bucket_count / bucket_scale
-        print '%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '*' * star_count)
+        print('%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '*' * star_count))
         
 
 if __name__ == "__main__":
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     if sys.stdin.isatty():
         # if isatty() that means it's run without anything piped into it
         parser.print_usage()
-        print "for more help use --help"
+        print("for more help use --help")
         sys.exit(1)
     histogram(load_stream(sys.stdin), options)
 

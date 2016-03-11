@@ -19,14 +19,14 @@ class TagClustering(object):
         # print tag_data
         all_tags = []
         all_urls = []
-        for url,tags in tag_data.items():
+        for url,tags in list(tag_data.items()):
             all_urls.append(url)
             all_tags.extend(tags)
 
         all_tags = list(set(all_tags)) # list of all tags in the space
         
         numerical_data = {} # create vectors for each item
-        for url,tags in tag_data.items():
+        for url,tags in list(tag_data.items()):
             v = []
             for t in all_tags:
                 if t in tags:
@@ -37,11 +37,11 @@ class TagClustering(object):
 
         recommend_url = 'http://www.qwantz.com/index.php'
         results = {}
-        for url,vector in numerical_data.items():
+        for url,vector in list(numerical_data.items()):
             d = euclidean(numerical_data[recommend_url],numerical_data[url])
             results[url] = d
 
-        print sorted(results.items(), key=lambda(u,s):(s, u))
+        print(sorted(list(results.items()), key=lambda u_s:(u_s[1], u_s[0])))
 		
 		
     def load_link_data(self,filename="links.csv"):

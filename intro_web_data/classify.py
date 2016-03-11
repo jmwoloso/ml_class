@@ -31,13 +31,13 @@ class NaiveBayesClassifier(object):
         
         p = 1
         for feature in features:
-            print "%s - %s - %s" % (feature, category, self.weighted_prob(feature, category))
+            print("%s - %s - %s" % (feature, category, self.weighted_prob(feature, category)))
             p *= self.weighted_prob(feature, category)
             
         return p
         
     def train_from_data(self, data):
-        for category, documents in data.items():
+        for category, documents in list(data.items()):
             for doc in documents:
                 self.train(doc, category)
                 
@@ -92,7 +92,7 @@ class NaiveBayesClassifier(object):
     def weighted_prob(self, f, category, weight=1.0, ap=0.5):
         basic_prob = self.feature_prob(f, category)
         
-        totals = sum([self.get_feature_count(f, category) for category in self.category_count.keys()])
+        totals = sum([self.get_feature_count(f, category) for category in list(self.category_count.keys())])
         
         w_prob = ((weight*ap) + (totals * basic_prob)) / (weight + totals)
         return w_prob
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     nb = NaiveBayesClassifier()
     nb.train_from_data(data)
-    print nb.probability("Early Friday afternoon, the lead negotiators for the N.B.A. and the players union will hold a bargaining session in Beverly Hills — the latest attempt to break a 12-month stalemate on a new labor deal.", 'arts')
-    print nb.probability("Early Friday afternoon, the lead negotiators for the N.B.A. and the players union will hold a bargaining session in Beverly Hills — the latest attempt to break a 12-month stalemate on a new labor deal.", 'sports')
+    print(nb.probability("Early Friday afternoon, the lead negotiators for the N.B.A. and the players union will hold a bargaining session in Beverly Hills — the latest attempt to break a 12-month stalemate on a new labor deal.", 'arts'))
+    print(nb.probability("Early Friday afternoon, the lead negotiators for the N.B.A. and the players union will hold a bargaining session in Beverly Hills — the latest attempt to break a 12-month stalemate on a new labor deal.", 'sports'))
 
 

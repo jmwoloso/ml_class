@@ -1,0 +1,429 @@
+--- intro_web_data/classify.py	(original)
++++ intro_web_data/classify.py	(refactored)
+@@ -31,13 +31,13 @@
+         
+         p = 1
+         for feature in features:
+-            print "%s - %s - %s" % (feature, category, self.weighted_prob(feature, category))
++            print("%s - %s - %s" % (feature, category, self.weighted_prob(feature, category)))
+             p *= self.weighted_prob(feature, category)
+             
+         return p
+         
+     def train_from_data(self, data):
+-        for category, documents in data.items():
++        for category, documents in list(data.items()):
+             for doc in documents:
+                 self.train(doc, category)
+                 
+@@ -92,7 +92,7 @@
+     def weighted_prob(self, f, category, weight=1.0, ap=0.5):
+         basic_prob = self.feature_prob(f, category)
+         
+-        totals = sum([self.get_feature_count(f, category) for category in self.category_count.keys()])
++        totals = sum([self.get_feature_count(f, category) for category in list(self.category_count.keys())])
+         
+         w_prob = ((weight*ap) + (totals * basic_prob)) / (weight + totals)
+         return w_prob
+@@ -116,7 +116,7 @@
+ 
+     nb = NaiveBayesClassifier()
+     nb.train_from_data(data)
+--- intro_web_data/delicious_import.py	(original)
++++ intro_web_data/delicious_import.py	(refactored)
+@@ -8,7 +8,7 @@
+ """
+ 
+ import sys
+-import urllib
++import urllib.request, urllib.parse, urllib.error
+ import csv
+ from xml.dom import minidom
+ 
+@@ -17,7 +17,7 @@
+     def __init__(self, username, password=''):
+ 		# API URL: https://user:passwd@api.del.icio.us/v1/posts/all
+         url = "https://%s:%s@api.del.icio.us/v1/posts/all" % (username, password)
+-        h = urllib.urlopen(url)
++        h = urllib.request.urlopen(url)
+         content = h.read()
+         h.close()
+                 
+@@ -44,7 +44,7 @@
+     try:
+         (username, password) = sys.argv[1:]
+     except ValueError:
+-        print "Usage: python delicious_import.py username password"
++        print("Usage: python delicious_import.py username password")
+         
+     d = delicious_import(username, password)
+ 
+--- intro_web_data/distance_demo.py	(original)
++++ intro_web_data/distance_demo.py	(refactored)
+@@ -16,9 +16,9 @@
+         v1 = [0,0,0,1]
+         v2 = [0,1,1,1]
+ 
+-        print euclidean(v1, v2)
+-        print cityblock(v1, v2)
+-        print jaccard(v1, v2)
++        print(euclidean(v1, v2))
++        print(cityblock(v1, v2))
++        print(jaccard(v1, v2))
+         
+ 
+ if __name__ == '__main__':
+--- intro_web_data/nytimes_pull.py	(original)
++++ intro_web_data/nytimes_pull.py	(refactored)
+@@ -1,4 +1,4 @@
+-import urllib
++import urllib.request, urllib.parse, urllib.error
+ import json
+ 
+ def main(api_key, category, label):
+@@ -6,13 +6,13 @@
+     content = []
+     for i in range(0,5):
+         # print "http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:('%s')&api-key=%s&page=%s" % (category, api_key, i)
+-        h = urllib.urlopen("http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:(\"%s\")&api-key=%s&page=%s" % (category, api_key, i))
+-        print h
++        h = urllib.request.urlopen("http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:(\"%s\")&api-key=%s&page=%s" % (category, api_key, i))
++        print(h)
+         try:
+             result = json.loads(h.read())
+             content.append(result)
+         except ValueError:
+-            print "Malformed JSON: " + data
++            print("Malformed JSON: " + data)
+             continue #In the rare cases that JSON refuses to parse
+ 
+     f = open(label, 'w')
+--- intro_web_data/rec.py	(original)
++++ intro_web_data/rec.py	(refactored)
+@@ -19,14 +19,14 @@
+         # print tag_data
+         all_tags = []
+         all_urls = []
+-        for url,tags in tag_data.items():
++        for url,tags in list(tag_data.items()):
+             all_urls.append(url)
+             all_tags.extend(tags)
+ 
+         all_tags = list(set(all_tags)) # list of all tags in the space
+         
+         numerical_data = {} # create vectors for each item
+-        for url,tags in tag_data.items():
++        for url,tags in list(tag_data.items()):
+             v = []
+             for t in all_tags:
+                 if t in tags:
+@@ -37,11 +37,11 @@
+ 
+         recommend_url = 'http://www.qwantz.com/index.php'
+         results = {}
+-        for url,vector in numerical_data.items():
++        for url,vector in list(numerical_data.items()):
+             d = euclidean(numerical_data[recommend_url],numerical_data[url])
+             results[url] = d
+ 
+-        print sorted(results.items(), key=lambda(u,s):(s, u))
++        print(sorted(list(results.items()), key=lambda u_s:(u_s[1], u_s[0])))
+ 		
+ 		
+     def load_link_data(self,filename="links.csv"):
+--- intro_web_data/tag_clustering.py	(original)
++++ intro_web_data/tag_clustering.py	(refactored)
+@@ -19,14 +19,14 @@
+         # print tag_data
+         all_tags = []
+         all_urls = []
+-        for url,tags in tag_data.items():
++        for url,tags in list(tag_data.items()):
+             all_urls.append(url)
+             all_tags.extend(tags)
+ 
+         all_tags = list(set(all_tags)) # list of all tags in the space
+         
+         numerical_data = [] # create vectors for each item
+-        for url,tags in tag_data.items():
++        for url,tags in list(tag_data.items()):
+             v = []
+             for t in all_tags:
+                 if t in tags:
+@@ -50,9 +50,9 @@
+             clustered_tags.setdefault(labels[i], []).extend(tag_data[url])
+             i += 1
+             
+-        for cluster_id,urls in clustered_urls.items():
+-            print cluster_id
+-            print urls
++        for cluster_id,urls in list(clustered_urls.items()):
++            print(cluster_id)
++            print(urls)
+         
+         # for cluster_id,tags in clustered_tags.items():
+         #     print cluster_id
+--- solving_problems/bloom_filter.py	(original)
++++ solving_problems/bloom_filter.py	(refactored)
+@@ -1,7 +1,7 @@
+ from hashes.bloom import bloomfilter
+ 
+ hash1 = bloomfilter('imastring')
+-print hash1.hashbits, hash1.num_hashes     # default values (see below)
++print(hash1.hashbits, hash1.num_hashes)     # default values (see below)
+ 
+ hash1.add('imastring string')
+ 
+@@ -10,4 +10,4 @@
+     hash1.add(word)
+ 
+ if 'machine' in hash1:
+-    print "machine!"
++    print("machine!")
+--- solving_problems/kmeans_descriptions.py	(original)
++++ solving_problems/kmeans_descriptions.py	(refactored)
+@@ -23,7 +23,7 @@
+               action="store_false", dest="minibatch", default=True,
+               help="Use ordinary k-means algorithm.")
+ 
+-print __doc__
++print(__doc__)
+ op.print_help()
+ 
+ (opts, args) = op.parse_args()
+@@ -42,14 +42,14 @@
+ labels = dataset_target
+ true_k = np.unique(labels).shape[0]
+ 
+-print "Extracting features from the training dataset using a sparse vectorizer"
++print("Extracting features from the training dataset using a sparse vectorizer")
+ t0 = time()
+ vectorizer = Vectorizer(max_df=0.95, max_features=10000)
+ X = vectorizer.fit_transform(dataset_data)
+-print X
++print(X)
+ 
+-print "done in %fs" % (time() - t0)
+-print "n_samples: %d, n_features: %d" % X.shape
++print("done in %fs" % (time() - t0))
++print("n_samples: %d, n_features: %d" % X.shape)
+ 
+ 
+ ###############################################################################
+@@ -57,11 +57,11 @@
+ 
+ km = MiniBatchKMeans(k=true_k, init='k-means++', n_init=1,init_size=1000,batch_size=1000, verbose=1)
+ 
+-print "Clustering with %s" % km
++print("Clustering with %s" % km)
+ t0 = time()
+ km.fit(X)
+-print "done in %0.3fs\n" % (time() - t0)
+-print km.labels_
++print("done in %0.3fs\n" % (time() - t0))
++print(km.labels_)
+ 
+ # print "Homogeneity: %0.3f" % metrics.homogeneity_score(labels, km.labels_)
+ # print "Completeness: %0.3f" % metrics.completeness_score(labels, km.labels_)
+--- solving_problems/liked_decision_tree.py	(original)
++++ solving_problems/liked_decision_tree.py	(refactored)
+@@ -20,6 +20,6 @@
+     dt = tree.DecisionTreeClassifier(min_split=10)
+     dt = dt.fit(data_features, data_labels)
+ 
+-    print dt.predict([50,500])
++    print(dt.predict([50,500]))
+     
+     o = tree.export_graphviz(dt,out_file='thingiverse_tree.dot',feature_names=['user_id','num_likes'])
+--- solving_problems/map_reduce.py	(original)
++++ solving_problems/map_reduce.py	(refactored)
+@@ -25,12 +25,13 @@
+ 
+ import sys
+ import re
++from functools import reduce
+ try:
+     import simplejson as json
+ except ImportError:
+     import json
+ 
+-import __builtin__
++import builtins
+ 
+ def map(line):
+     words = line.split()
+@@ -38,7 +39,7 @@
+         emit(word, str(1))
+     
+ def reduce(key, values):
+-    emit(key, str(sum(__builtin__.map(int,values))))
++    emit(key, str(sum(builtins.map(int,values))))
+ 
+ # Common library code follows:
+ 
+@@ -47,7 +48,7 @@
+     Emits a key->value pair.  Key and value should be strings.
+     """
+     try:
+-        print "\t".join( (key, value) )
++        print("\t".join( (key, value) ))
+     except:
+         pass
+ 
+@@ -55,7 +56,7 @@
+     """Calls map() for each input value."""
+     for line in sys.stdin:
+         line = line.rstrip()
+-        map(line)
++        list(map(line))
+ 
+ def run_reduce():
+     """Gathers reduce() data in memory, and calls reduce()."""
+@@ -78,7 +79,7 @@
+ def main():
+     """Runs map or reduce code, per arguments."""
+     if len(sys.argv) != 2 or sys.argv[1] not in ("map", "reduce"):
+-        print "Usage: %s <map|reduce>" % sys.argv[0]
++        print("Usage: %s <map|reduce>" % sys.argv[0])
+         sys.exit(1)
+     if sys.argv[1] == "map":
+         run_map()
+--- solving_problems/simhashes.py	(original)
++++ solving_problems/simhashes.py	(refactored)
+@@ -9,7 +9,7 @@
+     # print data
+     all_hashes = dict([(d, simhash(d)) for d in data])
+ 
+-    for k, h in all_hashes.items():
+-        print "%s %s" % (k, h)
+-        print all_hashes['Flatpack Bunny'].similarity(h)
++    for k, h in list(all_hashes.items()):
++        print("%s %s" % (k, h))
++        print(all_hashes['Flatpack Bunny'].similarity(h))
+ 
+--- solving_problems/scripts/bar_chart.py	(original)
++++ solving_problems/scripts/bar_chart.py	(refactored)
+@@ -41,32 +41,32 @@
+         data[row]+=1
+     
+     if not data:
+-        print "Error: no data"
++        print("Error: no data")
+         sys.exit(1)
+     
+-    max_length = max([len(key) for key in data.keys()])
++    max_length = max([len(key) for key in list(data.keys())])
+     max_length = min(max_length, 50)
+     value_characters = 80 - max_length
+     max_value = max(data.values())
+     scale = int(math.ceil(float(max_value) / value_characters))
+     scale = max(1, scale)
+     
+-    print "# each * represents a count of %d" % scale
++    print("# each * represents a count of %d" % scale)
+     
+     if options.sort_values:
+         # sort by values
+-        data = [[value,key] for key,value in data.items()]
++        data = [[value,key] for key,value in list(data.items())]
+         if options.reverse_sort:
+             data.sort(reverse=True)
+         else:
+             data.sort()
+     else:
+-        data = [[key,value] for key,value in data.items()]
++        data = [[key,value] for key,value in list(data.items())]
+         data.sort(reverse=options.reverse_sort)
+         data = [[value, key] for key,value in data]
+     format = "%" + str(max_length) + "s [%6d] %s"
+     for value,key in data:
+-        print format % (key[:max_length], value, (value / scale) * "*")
++        print(format % (key[:max_length], value, (value / scale) * "*"))
+ 
+ if __name__ == "__main__":
+     parser = OptionParser()
+@@ -82,7 +82,7 @@
+     
+     if sys.stdin.isatty():
+         parser.print_usage()
+-        print "for more help use --help"
++        print("for more help use --help")
+         sys.exit(1)
+     run(load_stream(sys.stdin), options)
+ 
+--- solving_problems/scripts/histogram.py	(original)
++++ solving_problems/scripts/histogram.py	(refactored)
+@@ -82,7 +82,7 @@
+         try:
+             yield Decimal(clean_line)
+         except:
+-            print >>sys.stderr, "invalid line %r" % line
++            print("invalid line %r" % line, file=sys.stderr)
+ 
+ def median(values):
+     length = len(values)
+@@ -156,12 +156,12 @@
+     if max(bucket_counts) > 75:
+         bucket_scale = int(max(bucket_counts) / 75)
+     
+-    print "# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v)
++    print("# NumSamples = %d; Min = %0.2f; Max = %0.2f" % (samples, min_v, max_v))
+     if skipped:
+-        print "# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or '')
++        print("# %d value%s outside of min/max" % (skipped, skipped > 1 and 's' or ''))
+     if options.mvsd:
+-        print "# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data))
+-    print "# each * represents a count of %d" % bucket_scale
++        print("# Mean = %f; Variance = %f; SD = %f; Median %f" % (mvsd.mean(), mvsd.var(), mvsd.sd(), median(accepted_data)))
++    print("# each * represents a count of %d" % bucket_scale)
+     bucket_min = min_v
+     bucket_max = min_v
+     for bucket in range(buckets):
+@@ -171,7 +171,7 @@
+         star_count = 0
+         if bucket_count:
+             star_count = bucket_count / bucket_scale
+-        print '%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '*' * star_count)
++        print('%10.4f - %10.4f [%6d]: %s' % (bucket_min, bucket_max, bucket_count, '*' * star_count))
+         
+ 
+ if __name__ == "__main__":
+@@ -190,7 +190,7 @@
+     if sys.stdin.isatty():
+         # if isatty() that means it's run without anything piped into it
+         parser.print_usage()
+-        print "for more help use --help"
++        print("for more help use --help")
+         sys.exit(1)
+     histogram(load_stream(sys.stdin), options)
+ 
+--- solving_problems/scripts/ninety_five_percent.py	(original)
++++ solving_problems/scripts/ninety_five_percent.py	(refactored)
+@@ -35,16 +35,16 @@
+         try:
+             t = Decimal(line)
+         except:
+-            print >>sys.stderr, "invalid line %r" % line
++            print("invalid line %r" % line, file=sys.stderr)
+         count +=1
+         data[t] = data.get(t, 0) + 1
+-    print calc_95(data, count)
++    print(calc_95(data, count))
+         
+ def calc_95(data, count):
+     # find the time it took for x entry, where x is the threshold
+     threshold = Decimal(count) * Decimal('.95')
+     start = Decimal(0)
+-    times = data.keys()
++    times = list(data.keys())
+     times.sort()
+     for t in times:
+         # increment our count by the # of items in this time bucket
+@@ -54,6 +54,6 @@
+ 
+ if __name__ == "__main__":
+     if sys.stdin.isatty() or '--help' in sys.argv or '-h' in sys.argv:
+-        print "Usage: cat data | %s" % os.path.basename(sys.argv[0])
++        print("Usage: cat data | %s" % os.path.basename(sys.argv[0]))
+         sys.exit(1)
+     run()

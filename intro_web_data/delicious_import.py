@@ -8,7 +8,7 @@ Copyright (c) 2010 Hilary Mason. All rights reserved.
 """
 
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import csv
 from xml.dom import minidom
 
@@ -17,7 +17,7 @@ class delicious_import(object):
     def __init__(self, username, password=''):
 		# API URL: https://user:passwd@api.del.icio.us/v1/posts/all
         url = "https://%s:%s@api.del.icio.us/v1/posts/all" % (username, password)
-        h = urllib.urlopen(url)
+        h = urllib.request.urlopen(url)
         content = h.read()
         h.close()
                 
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     try:
         (username, password) = sys.argv[1:]
     except ValueError:
-        print "Usage: python delicious_import.py username password"
+        print("Usage: python delicious_import.py username password")
         
     d = delicious_import(username, password)
 

@@ -1,4 +1,4 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import json
 
 def main(api_key, category, label):
@@ -6,13 +6,13 @@ def main(api_key, category, label):
     content = []
     for i in range(0,5):
         # print "http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:('%s')&api-key=%s&page=%s" % (category, api_key, i)
-        h = urllib.urlopen("http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:(\"%s\")&api-key=%s&page=%s" % (category, api_key, i))
-        print h
+        h = urllib.request.urlopen("http://api.nytimes.com/svc/search/v2/articlesearch.json?fq=news_desk:(\"%s\")&api-key=%s&page=%s" % (category, api_key, i))
+        print(h)
         try:
             result = json.loads(h.read())
             content.append(result)
         except ValueError:
-            print "Malformed JSON: " + data
+            print("Malformed JSON: " + data)
             continue #In the rare cases that JSON refuses to parse
 
     f = open(label, 'w')

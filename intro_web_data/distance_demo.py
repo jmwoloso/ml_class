@@ -16,9 +16,9 @@ class TagClustering(object):
         v1 = [0,0,0,1]
         v2 = [0,1,1,1]
 
-        print euclidean(v1, v2)
-        print cityblock(v1, v2)
-        print jaccard(v1, v2)
+        print(euclidean(v1, v2))
+        print(cityblock(v1, v2))
+        print(jaccard(v1, v2))
         
 
 if __name__ == '__main__':

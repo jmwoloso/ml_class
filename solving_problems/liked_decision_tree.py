@@ -20,6 +20,6 @@ if __name__ == '__main__':
     dt = tree.DecisionTreeClassifier(min_split=10)
     dt = dt.fit(data_features, data_labels)
 
-    print dt.predict([50,500])
+    print(dt.predict([50,500]))
     
     o = tree.export_graphviz(dt,out_file='thingiverse_tree.dot',feature_names=['user_id','num_likes'])

@@ -23,7 +23,7 @@ op.add_option("--no-minibatch",
               action="store_false", dest="minibatch", default=True,
               help="Use ordinary k-means algorithm.")
 
-print __doc__
+print(__doc__)
 op.print_help()
 
 (opts, args) = op.parse_args()
@@ -42,14 +42,14 @@ for row in input_data:
 labels = dataset_target
 true_k = np.unique(labels).shape[0]
 
-print "Extracting features from the training dataset using a sparse vectorizer"
+print("Extracting features from the training dataset using a sparse vectorizer")
 t0 = time()
 vectorizer = Vectorizer(max_df=0.95, max_features=10000)
 X = vectorizer.fit_transform(dataset_data)
-print X
+print(X)
 
-print "done in %fs" % (time() - t0)
-print "n_samples: %d, n_features: %d" % X.shape
+print("done in %fs" % (time() - t0))
+print("n_samples: %d, n_features: %d" % X.shape)
 
 
 ###############################################################################
@@ -57,11 +57,11 @@ print "n_samples: %d, n_features: %d" % X.shape
 
 km = MiniBatchKMeans(k=true_k, init='k-means++', n_init=1,init_size=1000,batch_size=1000, verbose=1)
 
-print "Clustering with %s" % km
+print("Clustering with %s" % km)
 t0 = time()
 km.fit(X)
-print "done in %0.3fs\n" % (time() - t0)
-print km.labels_
+print("done in %0.3fs\n" % (time() - t0))
+print(km.labels_)
 
 # print "Homogeneity: %0.3f" % metrics.homogeneity_score(labels, km.labels_)
 # print "Completeness: %0.3f" % metrics.completeness_score(labels, km.labels_)

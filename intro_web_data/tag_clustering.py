@@ -19,14 +19,14 @@ class TagClustering(object):
         # print tag_data
         all_tags = []
         all_urls = []
-        for url,tags in tag_data.items():
+        for url,tags in list(tag_data.items()):
             all_urls.append(url)
             all_tags.extend(tags)
 
         all_tags = list(set(all_tags)) # list of all tags in the space
         
         numerical_data = [] # create vectors for each item
-        for url,tags in tag_data.items():
+        for url,tags in list(tag_data.items()):
             v = []
             for t in all_tags:
                 if t in tags:
@@ -50,9 +50,9 @@ class TagClustering(object):
             clustered_tags.setdefault(labels[i], []).extend(tag_data[url])
             i += 1
             
-        for cluster_id,urls in clustered_urls.items():
-            print cluster_id
-            print urls
+        for cluster_id,urls in list(clustered_urls.items()):
+            print(cluster_id)
+            print(urls)
         
         # for cluster_id,tags in clustered_tags.items():
         #     print cluster_id
